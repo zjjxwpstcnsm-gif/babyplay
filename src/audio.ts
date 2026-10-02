@@ -2,6 +2,8 @@ let context: AudioContext | null = null;
 let enabled = true;
 let volume = 0.48;
 let voiceEnabled = true;
+let voicesActive = 0;
+let lastVoice = 0;
 
 export function configureAudio(sound: boolean, level: number, voice: boolean) {
   enabled = sound;
@@ -21,7 +23,7 @@ export function wakeAudio() {
 function tone(frequency: number, duration: number, delay = 0, kind: OscillatorType = 'sine', gain = 0.18) {
   if (!enabled) return;
   wakeAudio();
-  if (!context) return;
+  if (!context || voicesActive >= 28) return;
   const start = context.currentTime + delay;
   const oscillator = context.createOscillator();
   const envelope = context.createGain();
@@ -34,6 +36,8 @@ function tone(frequency: number, duration: number, delay = 0, kind: OscillatorTy
   envelope.connect(context.destination);
   oscillator.start(start);
   oscillator.stop(start + duration + 0.025);
+  voicesActive++;
+  oscillator.onended = () => { voicesActive--; oscillator.disconnect(); envelope.disconnect(); };
 }
 
 export function popSound(bubble = false) {
@@ -51,6 +55,7 @@ export function popSound(bubble = false) {
   gain.connect(context.destination);
   oscillator.start(start);
   oscillator.stop(start + 0.15);
+  oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
   tone(bubble ? 1046.5 : 783.99, 0.2, 0.035, 'sine', 0.08);
 }
 
@@ -66,8 +71,15 @@ export function sparkleSound() {
 
 export function tapSound() { tone(440, 0.13, 0, 'sine', 0.2); }
 
+export function splashSound() {
+  popSound(true);
+  [130.81, 196, 146.83].forEach((frequency, index) => tone(frequency, .23, index * .045, 'triangle', .13));
+}
+
 export function speak(text: string) {
   if (!enabled || !voiceEnabled || !('speechSynthesis' in window)) return;
+  if (performance.now() - lastVoice < 1200 && window.speechSynthesis.speaking) return;
+  lastVoice = performance.now();
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   const voices = window.speechSynthesis.getVoices();
@@ -79,9 +91,15 @@ export function speak(text: string) {
   window.speechSynthesis.speak(utterance);
 }
 
+export function ambientNote(step: number, underwater: boolean) {
+  const melody = underwater ? [392, 523, 659, 587, 523, 440, 392, 329] : [523, 659, 784, 659, 587, 523, 440, 392];
+  tone(melody[step % melody.length], 1.2, 0, 'sine', .065);
+  if (step % 4 === 0) tone(underwater ? 130.81 : 174.61, 2, .02, 'sine', .035);
+}
+
 export function animalSound(kind: string) {
   const sounds: Record<string, string> = { rabbit: '蹦蹦，兔兔来啦！', cat: '喵，喵～', dog: '汪，汪！', panda: '你好呀，我是小熊猫！', duck: '嘎，嘎，嘎！', dinosaur: '嗷呜！', unicorn: '叮铃铃，魔法来啦！' };
   const calls: Record<string, number[]> = { rabbit: [440, 660, 880], cat: [780, 640, 820], dog: [180, 140], panda: [220, 330, 260], duck: [620, 520, 620], dinosaur: [110, 85, 65], unicorn: [523, 659, 784, 1046] };
   (calls[kind] ?? calls.rabbit).forEach((frequency, index) => tone(frequency, kind === 'dinosaur' ? 0.4 : 0.18, index * 0.19, kind === 'unicorn' ? 'sine' : 'triangle', 0.16));
-  speak(sounds[kind] ?? '你好呀！');
+  speak(kind === 'george' ? '恐龙！一起跳泥坑吧！' : sounds[kind] ?? '你好呀！');
 }

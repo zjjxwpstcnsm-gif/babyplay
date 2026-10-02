@@ -1,4 +1,5 @@
-export type Mode = 'home' | 'balloons' | 'bubbles' | 'animals' | 'house';
+export type Mode = 'home' | 'balloons' | 'bubbles' | 'animals' | 'house' | 'peppa';
+export type PlayStyle = 'party' | 'music' | 'dream';
 export type BalloonKind = 'normal' | 'animal' | 'giant' | 'rainbow' | 'music' | 'magic' | 'gift' | 'photo';
 export const colors = [
   { name: '粉色', light: '#ffc5cd', middle: '#ff899f', dark: '#e76d8c' },
@@ -17,16 +18,18 @@ export const animals = [
   { id: 'panda', name: '熊猫', emoji: '🐼', color: '#e4f4e9', greeting: '给你一个大大的抱抱！' },
   { id: 'dinosaur', name: '小恐龙', emoji: '🦕', color: '#d9f0dc', greeting: '嗷呜～我来啦！' },
   { id: 'unicorn', name: '独角兽', emoji: '🦄', color: '#eadefa', greeting: '送你一点小魔法！' },
+  { id: 'george', name: '乔治', emoji: '🐷', color: '#ffdce9', greeting: '恐龙！一起跳泥坑吧！' },
 ];
 export const modes: { id: Mode; name: string; sub: string; icon: string; color: string }[] = [
   { id: 'balloons', name: '气球乐园', sub: '拍拍，惊喜来啦', icon: '🎈', color: '#fff0ec' },
   { id: 'bubbles', name: '泡泡浴', sub: '啵啵啵，戳个不停', icon: '🫧', color: '#ecf7fc' },
   { id: 'animals', name: '小动物乐园', sub: '听听谁在叫', icon: '🐰', color: '#f1f7e7' },
+  { id: 'peppa', name: '泥坑派对', sub: '和乔治一起跳', icon: '🐷', color: '#ffedf4' },
   { id: 'house', name: '我的动物屋', sub: '好朋友都在这里', icon: '🏡', color: '#fff5dd' },
 ];
 export type Photo = { id: string; name: string; data: string };
-export type Settings = { sound: boolean; voice: boolean; volume: number; speed: 'slow' | 'normal'; reducedMotion: boolean };
-export const defaultSettings: Settings = { sound: true, voice: true, volume: 0.48, speed: 'slow', reducedMotion: false };
+export type Settings = { sound: boolean; voice: boolean; music: boolean; volume: number; speed: 'slow' | 'normal'; reducedMotion: boolean };
+export const defaultSettings: Settings = { sound: true, voice: true, music: true, volume: 0.48, speed: 'slow', reducedMotion: false };
 export function readLocal<T>(key: string, fallback: T): T {
   try { return JSON.parse(localStorage.getItem(`babyplay-${key}`) ?? 'null') ?? fallback; } catch { return fallback; }
 }

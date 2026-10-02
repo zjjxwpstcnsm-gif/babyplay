@@ -4,6 +4,16 @@ import { Check, Expand, Hand, Keyboard, LockKeyhole, ShieldCheck, X } from 'luci
 import type useChildLock from './useChildLock';
 type LockState = ReturnType<typeof useChildLock>;
 
+export function SystemGestureGuide() {
+  const [platform, setPlatform] = useState(() => /Mac|iPad|iPhone/.test(navigator.platform) ? 'mac' : 'windows');
+  return <details className="system-gesture-guide" open><summary><Hand size={18} /> 防止多指滑动切换桌面 / 应用</summary>
+    <p>这一项需要家长在电脑系统中关闭，网页无法代替你设置。</p>
+    <div className="system-tabs" role="group" aria-label="选择系统说明"><button type="button" aria-pressed={platform === 'mac'} onClick={() => setPlatform('mac')}>Mac</button><button type="button" aria-pressed={platform === 'windows'} onClick={() => setPlatform('windows')}>Windows</button></div>
+    {platform === 'mac' ? <ol><li>打开「系统设置 · 触控板 · 更多手势」。</li><li>关闭「在全屏幕应用程序之间轻扫」「调度中心」「应用程序 Exposé」和「显示桌面」。</li><li>也可关闭「在页面之间轻扫」；玩完后可重新开启。</li></ol> : <ol><li>打开「设置 · 蓝牙和设备 · 触摸板」。</li><li>展开「三指手势」和「四指手势」。</li><li>将「轻扫」和「点击」设为「无」，玩完后可恢复。</li></ol>}
+    <small>完成系统设置后，再开启下方网页儿童锁。这里不会将系统手势标记为已锁定。</small>
+  </details>;
+}
+
 export function LockSetup({ onStart, onClose }: { onStart: () => void; onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => { ref.current?.showModal(); }, []);
@@ -12,6 +22,7 @@ export function LockSetup({ onStart, onClose }: { onStart: () => void; onClose: 
     <span className="lock-dialog-emblem"><ShieldCheck size={35} /></span>
     <span className="dialog-eyebrow">给小手一个安心的游乐场</span><h2 id="lock-title">打开儿童锁，专心玩一会儿</h2>
     <div className="lock-benefits"><p><Expand size={19} /><span><strong>全屏玩耍</strong><small>收起浏览器和家长设置，留下大大的游戏画面。</small></span></p><p><Keyboard size={19} /><span><strong>按键防误触</strong><small>普通按键继续玩，拦截网页能收到的快捷操作。</small></span></p><p><Hand size={19} /><span><strong>小手随意拍拍</strong><small>防滚动、缩放、右键和网页前后滑动。</small></span></p></div>
+    <SystemGestureGuide />
     <div className="lock-exit-guide"><LockKeyhole size={18} /><p>家长退出：<strong>长按右上角小锁 3 秒</strong>，再完成算式验证。</p></div>
     <p className="lock-limit">部分浏览器会询问“允许使用键盘锁定”，允许后保护更完整。系统切换应用、切换桌面等操作仍由系统控制；网页无法实现系统级全面锁定。</p>
     <button className="continue-button" onClick={onStart}><ShieldCheck size={19} /> 锁定并全屏玩</button>
@@ -65,6 +76,6 @@ export function ParentGate({ state }: { state: LockState }) {
 
 export function LockRecovery({ state }: { state: LockState }) {
   if (!state.needsResume || state.parentGate) return null;
-  return <div className="lock-recovery" role="region" aria-label="恢复锁定游戏"><div><img src="art/bunny.webp" alt="兔兔等你回来玩" draggable="false" /><h2>兔兔还在这里等你</h2><p>儿童锁还在，点一下回到全屏乐园。</p><button className="continue-button" disabled={state.busy} onClick={() => void state.enter()}><PlayIcon /> {state.busy ? '正在回来…' : '回到全屏乐园'}</button><button className="gate-cancel" onClick={() => state.setParentGate(true)}>家长验证并退出</button></div></div>;
+  return <div className="lock-recovery" role="region" aria-label="恢复锁定游戏"><div><img src="art/bunny.webp" alt="兔兔等你回来玩" draggable="false" /><h2>兔兔还在这里等你</h2><p>刚刚暂停了一下，小惊喜都帮你留着。</p><button className="continue-button" disabled={state.busy} onClick={() => void state.enter()}><PlayIcon /> {state.busy ? '正在回来…' : '回到全屏乐园'}</button><button className="gate-cancel" onClick={() => state.setParentGate(true)}>家长验证并退出</button></div></div>;
 }
 function PlayIcon() { return <Expand size={19} />; }

@@ -1,0 +1,28 @@
+PEPPA
+Use case: stylized-concept.
+Asset type: one finished transparent square full-body character sprite for a premium children's interactive playground.
+Primary request: recognizable Peppa Pig, the iconic Peppa Pig character, adapted into a beautifully crafted soft plush 3D storybook figure. Preserve her iconic cartoon proportions and recognizable silhouette: pink head with long snout projecting toward the right in profile, exactly two nostrils at the rounded end of the snout, rosy circular cheek, simple small black eyes, upright rounded ears, large rounded pink head, small red A-line dress, slim little arms, short thin pink legs and black shoes.
+Pose and expression: full body standing, facing slightly RIGHT, happy open cheerful smile, both arms held out in a welcoming gesture. Head, ears, hands, both legs and shoes entirely visible. No props.
+Style/medium: premium softly rendered plush 3D storybook toy with delicate felt nap, subtle soft fabric texture, rounded gentle dimensional modeling and cinematic soft studio highlights. Preserve the character's iconic simple graphic shapes and her red dress. Cute and cheerful.
+Composition: square 1:1, centered full-body single figure with approximately 10% empty transparent padding on every side. No cropped appendages.
+Background: genuine alpha transparency surrounding the entire isolated figure.
+Constraints: Peppa Pig rather than a generic pig; no ground, floor, scenery, cast shadow plate, border, text, logo, watermark or UI. No extra objects, no other characters. One finished image, no variants.
+
+GEORGE
+Use case: stylized-concept.
+Asset type: one finished transparent square full-body character sprite for a premium children's interactive playground.
+Primary request: recognizable George Pig, Peppa Pig's shorter little brother, adapted into a beautifully crafted soft plush 3D storybook figure. Preserve his iconic cartoon proportions and recognizable silhouette: small pink pig with large round pink head, long snout projecting toward the LEFT in profile, exactly two nostrils at the rounded end of the snout, rosy circular cheek, simple small black eyes, upright rounded ears, compact blue outfit, short thin pink legs and black shoes.
+Pose and expression: standing full body, facing slightly LEFT, smiling cheerfully, holding his tiny recognizable green dinosaur toy in his arms at chest height. Both legs and both black shoes completely visible. He has distinctly shorter little-brother proportions.
+Style/medium: premium softly rendered plush 3D storybook toy with delicate felt nap, subtle soft fabric texture, rounded gentle dimensional modeling and cinematic soft studio highlights. Preserve the character's iconic simple graphic shapes and blue outfit. Cute and cheerful.
+Composition: square 1:1, centered full-body single figure with approximately 10% empty transparent padding on every side. Head, ears, hands, dinosaur, legs and shoes entirely in frame.
+Background: genuine alpha transparency surrounding the entire isolated figure.
+Constraints: George Pig rather than a generic pig; no ground, floor, scenery, cast shadow plate, border, text, logo, watermark or UI. No extra objects apart from his tiny green dinosaur toy, no other characters. One finished image, no variants.
+
+MUDDY-GARDEN
+Use case: stylized-concept.
+Asset type: finished landscape 16:9 background for a premium children's interactive playground.
+Primary request: sunny plush 3D storybook garden inspired by Peppa Pig's garden, with rolling lime-green hills, clear blue sky, soft pillowy clouds, and a little simple yellow family house with a red roof far to the LEFT in the background.
+Scene and composition: camera faces straight ahead across the garden at a friendly playground perspective. Plenty of open lawn and uncluttered sky for character and balloon overlays. Include exactly TWO prominent FLAT oval muddy puddles on the foreground lawn, their center positions approximately x=40% and x=65% across the full image and y=73% down from the top. Each puddle is broad enough for a full-body character overlay, side by side with clear separation. They lie FLAT flush on the grass and are viewed in natural perspective as horizontal ovals.
+Puddles: rich chocolate-brown mud, glossy watery surface, subtle reflective highlights, small playful splash and ripple detail around their edges, no tall splash columns.
+Style/medium: exquisitely polished premium soft 3D storybook illustration, tangible velvety grass and soft tactile hills, rounded toy-like house, warm cinematic sunshine, rich gentle vivid palette, charming and welcoming. Cohesive with plush Peppa and George character sprites.
+Constraints: 16:9 landscape; no characters, animals, text, logos, watermark, UI or borders. Keep foreground puddles unobstructed and central play area open. No faces in clouds, no extra puddles. Create one original finished image.

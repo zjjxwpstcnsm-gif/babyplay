@@ -1,0 +1,27 @@
+LAGOON
+Use case: stylized-concept.
+Asset type: final production 16:9 landscape background for a premium PC balloon playground for children ages 3–5.
+Primary request: a tranquil teal and turquoise underwater bubble lagoon in an exquisitely polished soft 3D storybook world.
+Scene/backdrop: crystal-clear shallow underwater lagoon, luminous turquoise water, gentle dappled sunlight and subtle caustics. A soft sandy seabed occupies only the lower 15% of the image. Rounded coral and pearlescent shell props frame the extreme left and right edges.
+Style/medium: premium tactile 3D illustration with tangible felt, velvety and softly polished toy-like materials; beautiful gentle cinematic lighting and refined rich surfaces, cohesive with a plush storybook meadow.
+Composition/framing: landscape 16:9, very wide open luminous central 75% with sparse detail and no obstructions, reserved for interactive bubbles. Depth and decoration stay at the perimeter. Gentle bright vivid palette and calm cheerful mood.
+Constraints: no creatures, no animals, no characters, no pre-rendered large bubbles, no text, no logos, no watermark, no UI, no borders. The open center is the main functional requirement. Create one original finished image.
+
+STARLIGHT
+Use case: stylized-concept.
+Asset type: final production 16:9 landscape background for a premium PC balloon playground for children ages 3–5.
+Primary request: dreamlike plush landscape at blue hour, an enchanting lilac, indigo and teal starry sky above rolling velvety lavender hills.
+Scene/backdrop: sky fills the upper 75%; soft rolling lavender hills and a few rounded plush landscape accents stay along the bottom quarter and extreme edges. One small softly glowing moon near the top right. Subtle tiny stars, delicately luminous atmospheric depth.
+Style/medium: exquisitely polished premium soft 3D storybook illustration, tangible velvety felt textures on the hills, smooth magical sky gradients, gentle cinematic light and rich tactile materials, cohesive with a cheerful plush meadow.
+Composition/framing: landscape 16:9, central 70% remains open and unobstructed for pale interactive balloons; luminous but sufficiently saturated blue-hour sky ensures pale overlays are readable. Balanced calm wonder, welcoming and child-friendly, no dark threatening areas.
+Constraints: no characters, no animals, no text, no UI, no watermark, no logo, no large foreground objects and no pre-rendered balloons. Create one original finished image.
+
+TRAIN
+Use case: stylized-concept.
+Asset type: final production transparent wide 3:1 game sprite, a single coherent toy train silhouette for a surprise parade animation in a premium playground for children ages 3–5.
+Primary request: a full beautifully crafted toy train traveling and facing RIGHT. The locomotive must occupy the RIGHT end of the train, its rounded boiler and front bumper pointing toward the right edge; exactly two small open carriages trail behind it toward the LEFT, visibly connected in one complete horizontal train.
+Subject: coral, mint and honey-yellow polished wooden locomotive and two charming open toy carriages; cute happy plush white bunny and soft plush cat passengers, with warm expressive eyes, round cheeks, soft stitched or fuzzy details.
+Style/medium: premium plush 3D storybook game art, smooth rounded wooden craftsmanship, soft tangible materials, rich fine textures, gentle cinematic studio highlights, lovely dimensional modeling and warm inviting character appeal.
+Composition/framing: wide landscape 3:1 frame, clean nearly side-on view with slight 3D depth, entire train including wheels, ears, couplings and front bumper fully visible, generous clear margin around silhouette. All parts form one connected train. The engine is on the right.
+Background: actual alpha transparency, isolated object only, with transparent pixels surrounding and between visible parts.
+Constraints: no ground, no floor, no background, no shadow plate, no environmental scenery, no track, no text, no logo, no watermark, no UI. Do not fake transparency with a checkerboard. Create one original finished image.

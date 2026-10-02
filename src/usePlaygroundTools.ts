@@ -14,11 +14,11 @@ export default function usePlaygroundTools(state: PlaygroundState, navigate: (mo
       try { void Promise.resolve(context.registerTool(tool, { signal: lifecycle.signal })).catch(() => {}); } catch { /* Unsupported tool registries do not affect play. */ }
     };
     register({ name: 'get_playground_state', title: '查看乐园状态', description: 'Read the current scene, pop count, and collected animal IDs. Does not return personal photos.', inputSchema: { type: 'object', properties: {}, additionalProperties: false }, annotations: { readOnlyHint: true, untrustedContentHint: false }, execute: () => ({ ...latest.current.state }) });
-    register({ name: 'switch_playground_scene', title: '切换乐园场景', description: 'Navigate to the home, balloons, bubbles, animals, or house scene using the visible scene controls.', inputSchema: { type: 'object', properties: { scene: { type: 'string', enum: ['home', 'balloons', 'bubbles', 'animals', 'house'] } }, required: ['scene'], additionalProperties: false }, annotations: { readOnlyHint: false, untrustedContentHint: false }, execute: async (input: unknown) => {
+    register({ name: 'switch_playground_scene', title: '切换乐园场景', description: 'Navigate to the home, balloons, bubbles, animals, house, or peppa muddy puddles scene using the visible scene controls.', inputSchema: { type: 'object', properties: { scene: { type: 'string', enum: ['home', 'balloons', 'bubbles', 'animals', 'house', 'peppa'] } }, required: ['scene'], additionalProperties: false }, annotations: { readOnlyHint: false, untrustedContentHint: false }, execute: async (input: unknown) => {
       const scene = (input as { scene?: Mode } | null)?.scene;
-      if (!scene || !['home', 'balloons', 'bubbles', 'animals', 'house'].includes(scene)) throw new Error('请选择有效场景。');
+      if (!scene || !['home', 'balloons', 'bubbles', 'animals', 'house', 'peppa'].includes(scene)) throw new Error('请选择有效场景。');
       if (latest.current.state.paused) throw new Error('请先关闭家长弹窗，或恢复全屏游戏。');
-      if (latest.current.state.childLocked && scene === 'home') throw new Error('儿童锁开启时，请在四个游乐场景之间切换。');
+      if (latest.current.state.childLocked && scene === 'home') throw new Error('儿童锁开启时，请在游乐场景之间切换。');
       latest.current.navigate(scene);
       await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
       return { scene: latest.current.state.mode };

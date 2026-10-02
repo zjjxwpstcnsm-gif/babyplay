@@ -22,8 +22,8 @@ export default function useChildLock(onPlayKey: () => void) {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
   const [away, setAway] = useState(false);
-  const current = useRef({ locked, parentGate, onPlayKey, needsResume });
-  current.current = { locked, parentGate, onPlayKey, needsResume };
+  const current = useRef({ locked, parentGate, onPlayKey, needsResume, busy, keyboardStatus });
+  current.current = { locked, parentGate, onPlayKey, needsResume, busy, keyboardStatus };
   const attempt = useRef(0);
 
   const captureKeyboard = useCallback(async (request: number) => {
@@ -98,7 +98,8 @@ export default function useChildLock(onPlayKey: () => void) {
       current.current.onPlayKey();
     };
     const keyup = (event: KeyboardEvent) => { if (!inGate(event.target)) { prevent(event); event.stopImmediatePropagation(); } };
-    const wheel = (event: WheelEvent) => { if (!inGate(event.target) || event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) prevent(event); };
+    const wheel = (event: WheelEvent) => { if (!inGate(event.target) || event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) { prevent(event); event.stopImmediatePropagation(); } };
+    const touchstart = (event: TouchEvent) => { if (event.touches.length > 1) { prevent(event); event.stopImmediatePropagation(); window.dispatchEvent(new Event('babyplay:cancel-input')); } };
     const touchmove = (event: TouchEvent) => { if (!inGate(event.target) || event.touches.length > 1) prevent(event); };
     const select = (event: Event) => { if (!inGate(event.target)) prevent(event); };
     const pointer = (event: MouseEvent) => {
@@ -113,12 +114,15 @@ export default function useChildLock(onPlayKey: () => void) {
       if (!active && current.current.locked) { setKeyboardStatus('off'); setNeedsResume(true); keyboard()?.unlock(); }
     };
     const focus = () => { setAway(false); };
-    const blur = () => { setAway(true); };
-    const visible = () => { if (!document.hidden) setAway(false); };
+    const interrupted = () => { window.dispatchEvent(new Event('babyplay:cancel-input')); window.speechSynthesis?.cancel(); if (!current.current.busy && current.current.keyboardStatus !== 'waiting' && !current.current.parentGate) setNeedsResume(true); };
+    const blur = () => { setAway(true); interrupted(); };
+    const visible = () => { if (!document.hidden) setAway(false); else interrupted(); };
+    const pageRestore = () => { setAway(false); if (current.current.locked) setNeedsResume(true); };
     const options = { capture: true, passive: false };
     window.addEventListener('keydown', keydown, true);
     window.addEventListener('keyup', keyup, true);
     window.addEventListener('wheel', wheel, options);
+    window.addEventListener('touchstart', touchstart, options);
     window.addEventListener('touchmove', touchmove, options);
     for (const type of ['gesturestart', 'gesturechange', 'gestureend', 'contextmenu', 'dragstart', 'drop']) window.addEventListener(type, prevent, options);
     window.addEventListener('selectstart', select, options);
@@ -127,6 +131,7 @@ export default function useChildLock(onPlayKey: () => void) {
     window.addEventListener('popstate', popstate);
     window.addEventListener('focus', focus);
     window.addEventListener('blur', blur);
+    window.addEventListener('pageshow', pageRestore);
     document.addEventListener('visibilitychange', visible);
     document.addEventListener('fullscreenchange', fullchange);
     return () => {
@@ -135,6 +140,7 @@ export default function useChildLock(onPlayKey: () => void) {
       window.removeEventListener('keydown', keydown, true);
       window.removeEventListener('keyup', keyup, true);
       window.removeEventListener('wheel', wheel, true);
+      window.removeEventListener('touchstart', touchstart, true);
       window.removeEventListener('touchmove', touchmove, true);
       for (const type of ['gesturestart', 'gesturechange', 'gestureend', 'contextmenu', 'dragstart', 'drop']) window.removeEventListener(type, prevent, true);
       window.removeEventListener('selectstart', select, true);
@@ -143,6 +149,7 @@ export default function useChildLock(onPlayKey: () => void) {
       window.removeEventListener('popstate', popstate);
       window.removeEventListener('focus', focus);
       window.removeEventListener('blur', blur);
+      window.removeEventListener('pageshow', pageRestore);
       document.removeEventListener('visibilitychange', visible);
       document.removeEventListener('fullscreenchange', fullchange);
       keyboard()?.unlock();
