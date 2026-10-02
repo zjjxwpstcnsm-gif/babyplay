@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
+import AnimalArt from './AnimalArt';
 import { animals, colors } from './data';
 import type { BalloonKind, Mode, Photo, Settings } from './data';
 import { animalSound, noteSound, popSound, sparkleSound, speak, tapSound, wakeAudio } from './audio';
 
 type Balloon = { id: number; x: number; y: number; size: number; color: number; kind: BalloonKind; hp: number; animal: number; phase: number; drift: number; dodged: boolean; photo?: Photo };
 type Particle = { x: number; y: number; vx: number; vy: number; life: number; max: number; color: string; size: number; angle: number; spin: number; shape: number };
-type Reward = { id: number; emoji?: string; text: string; x: number; y: number; photo?: string; kind?: string };
+type Reward = { id: number; emoji?: string; text: string; x: number; y: number; photo?: string; kind?: string; animal?: string };
 type Props = { mode: Mode; settings: Settings; photos: Photo[]; paused: boolean; onStart: () => void; onPop: () => number; onUnlock: (id: string) => void; onReady?: (action: () => void) => void };
 let nextId = 1;
 
@@ -43,9 +44,9 @@ export default function Playfield({ mode, settings, photos, paused, onStart, onP
     if (particles.current.length > 550) particles.current.splice(0, particles.current.length - 550);
   }
 
-  function reward(emoji: string | undefined, text: string, x: number, y: number, photo?: string, kind?: string) {
+  function reward(emoji: string | undefined, text: string, x: number, y: number, photo?: string, kind?: string, animal?: string) {
     const id = nextId++;
-    setRewards(previous => [...previous.slice(-4), { id, emoji, text, x, y, photo, kind }]);
+    setRewards(previous => [...previous.slice(-4), { id, emoji, text, x, y, photo, kind, animal }]);
     later(() => setRewards(previous => previous.filter(item => item.id !== id)), 2700);
   }
 
@@ -105,7 +106,7 @@ export default function Playfield({ mode, settings, photos, paused, onStart, onP
     if (target.kind === 'animal') {
       const animal = animals[target.animal];
       config.onUnlock(animal.id);
-      reward(animal.emoji, animal.greeting, x, y, undefined, 'animal');
+      reward(undefined, animal.greeting, x, y, undefined, 'animal', animal.id);
       animalSound(animal.id);
     } else if (target.kind === 'gift') {
       sparkleSound();
@@ -131,7 +132,7 @@ export default function Playfield({ mode, settings, photos, paused, onStart, onP
       else {
         const animal = animals[milestone % 4 === 1 ? 0 : 5];
         config.onUnlock(animal.id);
-        reward(animal.emoji, milestone % 4 === 1 ? '兔兔来找你玩啦！' : '嗷呜！小恐龙来啦！', dimensions.current.w / 2, dimensions.current.h * 0.65, undefined, 'big-animal');
+        reward(animal.emoji, milestone % 4 === 1 ? '兔兔来找你玩啦！' : '嗷呜！小恐龙来啦！', dimensions.current.w / 2, dimensions.current.h * 0.65, undefined, 'big-animal', animal.id);
         animalSound(animal.id);
       }
     }
@@ -215,7 +216,7 @@ export default function Playfield({ mode, settings, photos, paused, onStart, onP
     const action = () => { const target = [...targets.current].sort((a, b) => a.y - b.y).find(item => item.y > 30 && item.y < dimensions.current.h - item.size); if (target) popRef.current(target, true); };
     onReady?.(action);
     const keydown = (event: KeyboardEvent) => {
-      if (event.ctrlKey || event.metaKey || event.altKey || event.repeat || ['Tab', 'Escape', 'Shift', 'Control', 'Alt', 'Meta', 'CapsLock'].includes(event.key) || event.key.startsWith('F') && event.key.length < 4) return;
+      if (event.ctrlKey || event.metaKey || event.altKey || event.repeat || ['Tab', 'Escape', 'Shift', 'Control', 'Alt', 'Meta', 'CapsLock'].includes(event.key) || /^F\d{1,2}$/.test(event.key)) return;
       const element = event.target as HTMLElement;
       if (element.closest('input, textarea, select, dialog') || element.tagName === 'BUTTON' && ['Enter', ' '].includes(event.key)) return;
       event.preventDefault();
@@ -239,12 +240,12 @@ export default function Playfield({ mode, settings, photos, paused, onStart, onP
       const bubble = mode === 'bubbles';
       const style = { width: item.size, height: bubble ? item.size : item.size * 1.55, '--light': c.light, '--middle': c.middle, '--dark': c.dark, '--size': `${item.size}px`, transform: `translate3d(${item.x}px, ${item.y}px, 0)` } as CSSProperties;
       return <button key={item.id} ref={node => { if (node) nodes.current.set(item.id, node); else nodes.current.delete(item.id); }} className={`balloon-target ${bubble ? 'bubble-target' : ''} kind-${item.kind}`} style={style} onClick={event => { event.stopPropagation(); popRef.current(item); }} aria-label={bubble ? '拍破泡泡' : `拍${c.name}${item.kind === 'giant' ? '超大' : item.kind === 'rainbow' ? '彩虹' : item.kind === 'animal' ? '动物' : item.kind === 'music' ? '音乐' : item.kind === 'photo' ? item.photo?.name : ''}气球`} data-kind={item.kind}>
-        <span className="balloon-body"><span className="balloon-shine" />{!bubble && <span className="balloon-face">{item.kind === 'animal' ? animals[item.animal].emoji : item.kind === 'music' ? '♫' : item.kind === 'magic' ? '✦' : item.kind === 'gift' ? '🎁' : item.kind === 'giant' ? '★' : item.kind === 'photo' && item.photo ? <img src={item.photo.data} alt={item.photo.name} /> : item.kind === 'rainbow' ? '☁' : <span className="happy-face"><i /><i /><b /></span>}</span>}{item.kind === 'giant' && <span className="balloon-hearts">{Array.from({ length: item.hp }, (_, i) => <i key={i} />)}</span>}</span>
+        <span className="balloon-body"><span className="balloon-shine" />{!bubble && <span className="balloon-face">{item.kind === 'animal' ? <AnimalArt id={animals[item.animal].id} /> : item.kind === 'music' ? '♫' : item.kind === 'magic' ? '✦' : item.kind === 'gift' ? '🎁' : item.kind === 'giant' ? '★' : item.kind === 'photo' && item.photo ? <img src={item.photo.data} alt={item.photo.name} /> : item.kind === 'rainbow' ? '☁' : <span className="happy-face"><i /><i /><b /></span>}</span>}{item.kind === 'giant' && <span className="balloon-hearts">{Array.from({ length: item.hp }, (_, i) => <i key={i} />)}</span>}</span>
         {!bubble && <><span className="balloon-knot" /><svg className="balloon-string" viewBox="0 0 40 95" fill="none" aria-hidden="true"><path d="M20 0C-2 23 44 42 20 65C10 75 17 83 19 95" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg></>}
       </button>;
     })}
     <canvas ref={canvas} className="particle-canvas" aria-hidden="true" />
-    {rewards.map(item => <div key={item.id} className={`pop-reward ${item.kind ?? ''}`} style={{ left: Math.min(dimensions.current.w - 90, Math.max(90, item.x)), top: Math.min(dimensions.current.h - 70, Math.max(110, item.y)) }} aria-live="polite"><span className="reward-emoji">{item.photo ? <img src={item.photo} alt="熟悉的面孔" /> : item.emoji}</span><span className="reward-caption">{item.text}</span></div>)}
+    {rewards.map(item => <div key={item.id} className={`pop-reward ${item.kind ?? ''}`} style={{ left: Math.min(dimensions.current.w - 90, Math.max(90, item.x)), top: Math.min(dimensions.current.h - 70, Math.max(110, item.y)) }} aria-live="polite"><span className="reward-emoji">{item.animal ? <AnimalArt id={item.animal} /> : item.photo ? <img src={item.photo} alt="熟悉的面孔" /> : item.emoji}</span><span className="reward-caption">{item.text}</span></div>)}
     {special && <div key={special.id} className={`special-effect ${special.kind}`} aria-live="polite">{special.kind === 'rainbow' ? <><span>🌈</span><p>彩虹来啦！</p></> : <span>🚂<span>🚃🚃</span></span>}</div>}
     {mode !== 'home' && <>
       <button className="sky-sun" aria-label={night ? '点月亮，变回白天' : '点太阳，看看小星星'} onClick={() => { wakeAudio(); setNight(!night); sparkleSound(); speak(night ? '太阳出来啦！' : '小星星，亮晶晶！'); }}>{night ? '🌙' : '☀️'}</button>

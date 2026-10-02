@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { Camera, Check, Heart, Plus, Settings2, Trash2, Volume2, X } from 'lucide-react';
+import { Camera, Check, Heart, Plus, Settings2, ShieldCheck, Trash2, Volume2, X } from 'lucide-react';
 import { saveLocal } from './data';
 import type { Photo, Settings } from './data';
 
-type Props = { settings: Settings; photos: Photo[]; onSettings: (value: Settings) => void; onPhotos: (value: Photo[]) => void; onClose: () => void };
+type Props = { settings: Settings; photos: Photo[]; onSettings: (value: Settings) => void; onPhotos: (value: Photo[]) => void; onClose: () => void; onLock: () => void };
 function Toggle({ checked, label, onChange }: { checked: boolean; label: string; onChange: () => void }) {
   return <button className={`toggle ${checked ? 'on' : ''}`} role="switch" aria-checked={checked} aria-label={label} onClick={onChange}><span /></button>;
 }
 
-export default function ParentSettings({ settings, photos, onSettings, onPhotos, onClose }: Props) {
+export default function ParentSettings({ settings, photos, onSettings, onPhotos, onClose, onLock }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const [name, setName] = useState('宝宝');
@@ -51,6 +51,7 @@ export default function ParentSettings({ settings, photos, onSettings, onPhotos,
   }
   return <dialog ref={dialog} className="settings-dialog" aria-labelledby="settings-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === dialog.current) onClose(); }}>
     <div className="dialog-header"><span className="dialog-icon"><Settings2 size={23} /></span><div><h2 id="settings-title">家长的小角落</h2><p>把乐园调成宝宝喜欢的样子</p></div><button className="close-button" aria-label="关闭家长设置" onClick={onClose}><X size={21} /></button></div>
+    <button className="settings-lock-card" onClick={onLock}><ShieldCheck size={25} /><span><strong>开启儿童锁</strong><small>全屏、按键和触控板防误触 · 家长验证解锁</small></span><span>→</span></button>
     <section className="settings-section"><h3><Volume2 size={17} /> 声音与节奏</h3>
       <div className="setting-row"><div><strong>开心音效</strong><small>气球的啪、泡泡的啵和音乐声</small></div><Toggle checked={settings.sound} label="开心音效" onChange={() => change('sound', !settings.sound)} /></div>
       <div className="setting-row"><div><strong>语音小伙伴</strong><small>动物叫声和中文惊喜提示</small></div><Toggle checked={settings.voice} label="语音小伙伴" onChange={() => change('voice', !settings.voice)} /></div>

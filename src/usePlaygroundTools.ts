@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { Mode } from './data';
 
 type ModelContext = { registerTool: (tool: { name: string; title: string; description: string; inputSchema: object; annotations: { readOnlyHint: boolean; untrustedContentHint: boolean }; execute: (input: unknown) => unknown }, options: { signal: AbortSignal }) => void | Promise<void> };
-type PlaygroundState = { mode: Mode; collected: string[]; pops: number; paused: boolean };
+type PlaygroundState = { mode: Mode; collected: string[]; pops: number; paused: boolean; childLocked: boolean };
 export default function usePlaygroundTools(state: PlaygroundState, navigate: (mode: Mode) => void, pop: () => void) {
   const latest = useRef({ state, navigate, pop });
   latest.current = { state, navigate, pop };
@@ -17,7 +17,8 @@ export default function usePlaygroundTools(state: PlaygroundState, navigate: (mo
     register({ name: 'switch_playground_scene', title: '切换乐园场景', description: 'Navigate to the home, balloons, bubbles, animals, or house scene using the visible scene controls.', inputSchema: { type: 'object', properties: { scene: { type: 'string', enum: ['home', 'balloons', 'bubbles', 'animals', 'house'] } }, required: ['scene'], additionalProperties: false }, annotations: { readOnlyHint: false, untrustedContentHint: false }, execute: async (input: unknown) => {
       const scene = (input as { scene?: Mode } | null)?.scene;
       if (!scene || !['home', 'balloons', 'bubbles', 'animals', 'house'].includes(scene)) throw new Error('请选择有效场景。');
-      if (latest.current.state.paused) throw new Error('请先关闭家长设置。');
+      if (latest.current.state.paused) throw new Error('请先关闭家长弹窗，或恢复全屏游戏。');
+      if (latest.current.state.childLocked && scene === 'home') throw new Error('儿童锁开启时，请在四个游乐场景之间切换。');
       latest.current.navigate(scene);
       await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
       return { scene: latest.current.state.mode };
