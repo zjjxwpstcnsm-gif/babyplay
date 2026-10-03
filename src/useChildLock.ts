@@ -13,7 +13,7 @@ function remember(value: boolean) {
 function keyboard() { return (navigator as Navigator & { keyboard?: KeyboardCapture }).keyboard; }
 
 /** Page protection is deliberately reversible; OS shortcuts remain under OS control. */
-export default function useChildLock(onPlayKey: () => void) {
+export default function useChildLock(onPlayKey: (event: KeyboardEvent) => void) {
   const [locked, setLocked] = useState(restoreChildLock);
   const [parentGate, setParentGate] = useState(false);
   const [needsResume, setNeedsResume] = useState(restoreChildLock);
@@ -95,7 +95,7 @@ export default function useChildLock(onPlayKey: () => void) {
       prevent(event);
       event.stopImmediatePropagation();
       if (current.current.parentGate || current.current.needsResume || event.repeat || event.ctrlKey || event.metaKey || event.altKey || /^F\d{1,2}$/.test(event.key) || ['Escape', 'Tab', 'Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'PrintScreen'].includes(event.key)) return;
-      current.current.onPlayKey();
+      current.current.onPlayKey(event);
     };
     const keyup = (event: KeyboardEvent) => { if (!inGate(event.target)) { prevent(event); event.stopImmediatePropagation(); } };
     const wheel = (event: WheelEvent) => { if (!inGate(event.target) || event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) { prevent(event); event.stopImmediatePropagation(); } };

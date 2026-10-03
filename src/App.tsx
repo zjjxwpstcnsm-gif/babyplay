@@ -3,6 +3,8 @@ import { ArrowLeft, Expand, Gift, Home, MoonStar, MousePointer2, Music2, Play, S
 import Playfield from './Playfield';
 import AnimalGarden from './AnimalGarden';
 import PeppaGarden from './PeppaGarden';
+import LearningBalloons from './LearningBalloons';
+import ShadowPlay from './ShadowPlay';
 import ParentSettings from './ParentSettings';
 import usePlaygroundTools from './usePlaygroundTools';
 import useSoundscape from './useSoundscape';
@@ -26,11 +28,11 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [lockSetup, setLockSetup] = useState(false);
   const [hidden, setHidden] = useState(document.hidden);
-  const popAction = useRef<(() => void) | null>(null);
-  const childLock = useChildLock(() => popAction.current?.());
+  const popAction = useRef<((event?: KeyboardEvent) => void) | null>(null);
+  const childLock = useChildLock(event => popAction.current?.(event));
   const paused = settingsOpen || lockSetup || hidden || childLock.paused;
   useSoundscape(settings.sound && settings.music && mode !== 'home' && !(mode === 'balloons' && playStyle === 'music'), paused, mode === 'bubbles');
-  const registerPop = useCallback((action: () => void) => { popAction.current = action; }, []);
+  const registerPop = useCallback((action: (event?: KeyboardEvent) => void) => { popAction.current = action; }, []);
   const handlePop = useCallback(() => { totalPops.current++; setPopCount(totalPops.current); return totalPops.current; }, []);
   useEffect(() => { configureAudio(settings.sound, settings.volume, settings.voice); saveLocal('settings', settings); }, [settings]);
   useEffect(() => {
@@ -64,13 +66,15 @@ export default function App() {
       {(mode === 'home' || mode === 'balloons' || mode === 'bubbles') && <Playfield mode={mode} style={mode === 'home' || mode === 'bubbles' ? 'party' : playStyle} collected={collected} settings={settings} photos={photos} paused={paused} onStart={() => setMode('balloons')} onPop={handlePop} onUnlock={unlock} onReady={registerPop} />}
       {(mode === 'animals' || mode === 'house') && <AnimalGarden house={mode === 'house'} collected={collected} reducedMotion={settings.reducedMotion} paused={paused} onPlay={() => go('balloons')} onReady={registerPop} />}
       {mode === 'peppa' && <PeppaGarden paused={paused} reducedMotion={settings.reducedMotion} onUnlock={unlock} onReady={registerPop} />}
+      {mode === 'learning' && <LearningBalloons paused={paused} settings={settings} onReady={registerPop} />}
+      {mode === 'shadow' && <ShadowPlay paused={paused} reducedMotion={settings.reducedMotion} onReady={registerPop} />}
       {mode === 'home' ? <>
         <div className="home-copy"><div className="welcome-pill"><span>✦</span> 欢迎来到你的快乐小天地</div><h1>小手拍拍，<br /><span>惊喜来啦！</span></h1><p>彩色气球里，藏着好多好朋友。<br />来和兔兔一起，把快乐拍出来吧。</p><button className="start-button" onClick={() => { go('balloons'); speak('欢迎来到气球乐园！拍拍气球吧！'); }}><Play size={25} fill="currentColor" strokeWidth={0} /> 开始玩 <span className="start-spark">✦</span></button><span className="start-hint"><MousePointer2 size={14} /> 点一下就能玩，按任意键也可以哦</span></div>
         <img className="home-bunny" src="art/bunny.webp" alt="拿着粉色气球、向你挥手的兔兔" draggable="false" />
         <span className="bunny-greeting">嗨，一起玩呀！ <span>♡</span></span>
         <div className="home-corner"><span>☀️</span> 今天也是快乐的一天</div>
       </> : <>
-        <div className="scene-heading">{!childLock.locked && <button className="back-button" aria-label="回到首页" onClick={() => go('home')}><ArrowLeft size={20} /></button>}<div><h1>{active?.name}</h1><p>{mode === 'peppa' ? '小猪佩奇的小天地 · 乔治来做客' : mode === 'bubbles' ? '按住轻轻划，一串泡泡开花啦' : mode === 'balloons' && playStyle === 'music' ? '每一种颜色，都是一个小音符' : mode === 'balloons' && playStyle === 'dream' ? '轻轻拍拍，把星星送上天空' : mode === 'animals' ? '喵～嘎嘎～谁在和你打招呼？' : mode === 'house' ? '你的好朋友，在这里等你' : '拍拍气球，看看里面有什么'}</p></div></div>
+        <div className="scene-heading">{!childLock.locked && <button className="back-button" aria-label="回到首页" onClick={() => go('home')}><ArrowLeft size={20} /></button>}<div><h1>{active?.name}</h1><p>{mode === 'learning' ? '看一看，按一样的字符 · 慢慢来' : mode === 'shadow' ? '向前向后，和影子做朋友' : mode === 'peppa' ? '小猪佩奇的小天地 · 乔治来做客' : mode === 'bubbles' ? '按住轻轻划，一串泡泡开花啦' : mode === 'balloons' && playStyle === 'music' ? '每一种颜色，都是一个小音符' : mode === 'balloons' && playStyle === 'dream' ? '轻轻拍拍，把星星送上天空' : mode === 'animals' ? '喵～嘎嘎～谁在和你打招呼？' : mode === 'house' ? '你的好朋友，在这里等你' : '拍拍气球，看看里面有什么'}</p></div></div>
         {(mode === 'balloons' || mode === 'bubbles') && <><div className="surprise-progress"><span className="gift-icon"><Gift size={22} /></span><span><small>下一份小惊喜</small><span className="progress-stars">{Array.from({ length: 10 }, (_, index) => <span key={index} className={index < popCount % 10 ? 'lit' : ''}>★</span>)}</span></span></div><div className={`play-hint ${playStyle === 'music' && mode === 'balloons' ? 'hide-hint' : ''}`}><MousePointer2 size={16} /> {mode === 'bubbles' ? '按住扫泡泡' : '拍拍或轻轻划'} <span>或</span> <kbd>任意键</kbd><span className="hint-heart">♥</span> 怎么拍，都开心</div></>}
       </>}
       {mode === 'balloons' && <div className="play-style-switch" role="group" aria-label="选择气球玩法">{([{id:'party',label:'惊喜拍拍',icon:Sparkles},{id:'music',label:'音乐气球',icon:Music2},{id:'dream',label:'星夜魔法',icon:MoonStar}] as const).map(style=><button key={style.id} aria-pressed={playStyle===style.id} onClick={()=>{if(paused)return;setPlayStyle(style.id);wakeAudio();sparkleSound();}}><style.icon size={19}/><span>{style.label}</span></button>)}</div>}
