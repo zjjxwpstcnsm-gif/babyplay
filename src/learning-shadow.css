@@ -33,3 +33,12 @@
   .shadow-animal-picker button{padding:8px 14px;min-height:44px;font-size:12px}.shadow-animal-picker button>span{font-size:21px}
   .locked-shell .mode-navigation .mode-card{min-height:58px}
 }
+.shadow-mode-switch{position:absolute;top:26px;left:50%;transform:translateX(-50%);display:flex;gap:5px;padding:5px;border:1px solid white;border-radius:20px;background:#fffdf5dd;z-index:5}
+.shadow-mode-switch button{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;font-size:14px;border-radius:15px;color:#8a7899;background:transparent;white-space:nowrap}
+.shadow-mode-switch button[aria-pressed=true]{background:#e5dced;color:#736181}.shadow-mode-switch button:disabled{opacity:.6}
+.person-shadow-canvas{position:absolute;top:42px;left:3%;width:94%;height:calc(100% - 90px);object-fit:contain;transform:scaleX(-1);filter:blur(.65px) drop-shadow(5px 4px 6px #3d2f4433);pointer-events:none}
+.person-shadow-placeholder{position:absolute;inset:45px 12px 50px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;color:#9b8b74;font-size:14px;text-align:center}.person-shadow-placeholder>svg{opacity:.4}
+.person-shadow-tip{grid-column:1/-1;min-height:52px;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;line-height:1.8;font-size:13px;color:#8d7997;background:#fffdf48f;padding:9px 15px;border-radius:19px}
+@media(min-width:721px) and (max-width:950px){.shadow-mode-switch{left:auto;right:24px;transform:none}.shadow-mode-switch button{font-size:12px;padding:10px}.shadow-game{grid-template-columns:minmax(0,1fr) 220px}}
+@media(min-width:721px) and (max-height:720px){.shadow-mode-switch{top:22px}.shadow-mode-switch button{padding:8px 12px;font-size:12px}.person-shadow-tip{min-height:44px;padding:6px 12px;font-size:11px}}
+@media(max-width:720px){.shadow-game{padding-top:135px}.shadow-mode-switch{top:82px;gap:4px;max-width:95%;width:max-content}.shadow-mode-switch button{font-size:13px;padding:9px 12px}.game-stage.stage-shadow{min-height:900px}.person-shadow-tip{font-size:11px}.shadow-person-mode .shadow-camera-preview{grid-row:span 3}.person-shadow-canvas{top:34px;height:calc(100% - 78px)}.locked-shell .shadow-game{padding-top:127px}.locked-shell .shadow-mode-switch{top:74px}.locked-shell .stage-shadow{min-height:0}}

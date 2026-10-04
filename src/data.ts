@@ -23,7 +23,7 @@ export const animals = [
 export const modes: { id: Mode; name: string; sub: string; icon: string; color: string }[] = [
   { id: 'balloons', name: '气球乐园', sub: '拍拍，惊喜来啦', icon: '🎈', color: '#fff0ec' },
   { id: 'learning', name: '认字气球', sub: '找一样，轻轻按', icon: '🔤', color: '#fff2de' },
-  { id: 'shadow', name: '动物影子', sub: '靠近大，退后小', icon: '🐾', color: '#eee9fc' },
+  { id: 'shadow', name: '影子乐园', sub: '动物和真人，一起动', icon: '🐾', color: '#eee9fc' },
   { id: 'bubbles', name: '泡泡浴', sub: '啵啵啵，戳个不停', icon: '🫧', color: '#ecf7fc' },
   { id: 'animals', name: '小动物乐园', sub: '听听谁在叫', icon: '🐰', color: '#f1f7e7' },
   { id: 'peppa', name: '泥坑派对', sub: '和乔治一起跳', icon: '🐷', color: '#ffedf4' },
